@@ -38,4 +38,18 @@ def convert_to_wav(input_path:str)->str:
     audio.export(output_path,format="wav")
     return output_path
 
-print(convert_to_wav(data))
+wav_path=convert_to_wav(data)
+
+def chunk_audio(wav_path:str,chunk_minutes:int=10)->list:
+    audio=AudioSegment.from_wav(wav_path)
+    chunk_ms=chunk_minutes*60*1000
+
+    chunks=[]
+    for i,start in enumerate(range(0,len(audio),chunk_ms)):
+        chunk=audio[start:start+chunk_ms]
+        chunk_path=f"{wav_path}_chunk_{i}.wav"
+        chunk.export(chunk_path,format="wav")
+
+        chunks.append(chunk_path)
+    return chunks
+print(chunk_audio(wav_path))

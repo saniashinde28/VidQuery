@@ -56,7 +56,7 @@ def _send_to_sarvam(piece_path: str) -> str:
 
     return response.json().get("transcript", "")
 
-
+#receives the entire chunk altogether
 def transcribe_chunk_sarvam(chunk_path:str)->str:
     """
     Sarvam sync API only accepts ≤30s audio. We split this chunk into

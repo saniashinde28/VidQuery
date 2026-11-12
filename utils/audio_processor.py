@@ -28,8 +28,6 @@ def download_youtube_audio(url:str)->str:
         filename=ydl.prepare_filename(info).replace(".webm",".wav").replace(".m4a",".wav")
     return filename
 
-data=download_youtube_audio("https://youtu.be/T-D1OfcDW1M?si=EgubxcQyObKO7NvS")
-
 def convert_to_wav(input_path:str)->str:
     """convert any audio/video file to WAV format using pydub"""
     output_path=os.path.splitext(input_path)[0]+"_converted.wav"
@@ -38,7 +36,6 @@ def convert_to_wav(input_path:str)->str:
     audio.export(output_path,format="wav")
     return output_path
 
-wav_path=convert_to_wav(data)
 
 def chunk_audio(wav_path:str,chunk_minutes:int=10)->list:
     audio=AudioSegment.from_wav(wav_path)
@@ -52,4 +49,15 @@ def chunk_audio(wav_path:str,chunk_minutes:int=10)->list:
 
         chunks.append(chunk_path)
     return chunks
-print(chunk_audio(wav_path))
+
+def process_input(source:str)->list:
+    if source.startswith("https://"):
+        print("Detected YOUTUBE url, downloading video,audio")
+        wav_path=download_youtube_audio(source)
+    else:
+        print("Detected local file.Converting to WAV..")
+        wav_path=convert_to_wav(source)
+    print("Chunking audio...")
+    chunks=chunk_audio(wav_path)
+    print(f"Audio ready - {len(chunks)} chunks created.")
+    return chunks

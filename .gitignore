@@ -2,3 +2,13 @@
 .venv
 __pycache__
 test.py
+
+downloads/
+.env
+.venv/
+__pycache__/
+downloads/
+*.wav
+*.mp3
+*.m4a
+chroma_db/

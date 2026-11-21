@@ -176,10 +176,10 @@ GROQ_API_KEY=your_groq_api_key
 
 Configure the Sarvam AI API key using the environment variable expected by your transcription implementation if using Hinglish transcription.
 
-### 5. Run the application
+### 5. Run the streamlit application
 
 ```bash
-python main.py
+streamlit run app.py
 ```
 
 Enter a YouTube URL or local recording path and select the transcription language.

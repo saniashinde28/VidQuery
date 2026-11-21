@@ -58,5 +58,12 @@ if __name__ == "__main__":
             break
         if not question:
             continue
-        answer = ask_questions(rag_chain, question)
-        print(f"\n🤖 Assistant: {answer}\n")
+        result = ask_questions(rag_chain, question)
+        print(f"\n🤖 Assistant: {result['answer']}")
+        
+        print("\nSources:")
+        
+        for source in result["sources"]:
+            print(f"\nChunk: {source['chunk_index']}")
+            print(f"Relevance: {source['score']}")
+            print(source["content"])

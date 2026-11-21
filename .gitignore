@@ -12,3 +12,5 @@ downloads/
 *.mp3
 *.m4a
 chroma_db/
+vector_db/
+*.pyc

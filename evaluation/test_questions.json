@@ -1,0 +1,52 @@
+
+[
+  {
+    "question": "What are vector databases?",
+    "expected_answer": "Vector databases store embeddings and use similarity search to retrieve semantically similar information.",
+    "expected_keywords": ["embeddings", "similarity", "semantic"],
+    "relevant_chunk_ids": [6, 7, 9, 10],
+    "should_abstain": false
+  },
+  {
+    "question": "How does RAG use a vector database?",
+    "expected_answer": "RAG converts a user query into a vector, retrieves relevant content through similarity search, and adds the retrieved content to the LLM prompt.",
+    "expected_keywords": ["vector", "similarity search", "prompt"],
+    "relevant_chunk_ids": [9, 10],
+    "should_abstain": false
+  },
+  {
+    "question": "What is MCP and what problem does it solve?",
+    "expected_answer": "MCP standardizes how AI applications connect to external systems and tools, reducing the need for custom integrations.",
+    "expected_keywords": ["standardized", "external systems", "tools"],
+    "relevant_chunk_ids": [11, 12],
+    "should_abstain": false
+  },
+  {
+    "question": "What are AI agents?",
+    "expected_answer": "AI agents are systems that perceive their environment, reason, and act autonomously to achieve goals.",
+    "expected_keywords": ["autonomously", "reason", "goals"],
+    "relevant_chunk_ids": [2, 4],
+    "should_abstain": false
+  },
+  {
+    "question": "What is the difference between reasoning models and regular language models?",
+    "expected_answer": "Reasoning models are trained to solve problems step by step, while regular language models primarily predict the next token.",
+    "expected_keywords": ["step by step", "reasoning", "next token"],
+    "relevant_chunk_ids": [5],
+    "should_abstain": false
+  },
+  {
+    "question": "What programming language was used to build the AI agents in the video?",
+    "expected_answer": "I could not find this information in the meeting transcript.",
+    "expected_keywords": [],
+    "relevant_chunk_ids": [],
+    "should_abstain": true
+  },
+  {
+    "question": "What is the capital of Japan?",
+    "expected_answer": "I could not find this information in the meeting transcript.",
+    "expected_keywords": [],
+    "relevant_chunk_ids": [],
+    "should_abstain": true
+  }
+]

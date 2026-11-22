@@ -1,3 +1,4 @@
+
 import os
 
 from langchain.chat_models import init_chat_model
@@ -9,6 +10,8 @@ from core.vector_store import (
     build_vector_store,
     load_vector_store
 )
+
+from core.semantic_cache import SemanticCache
 
 
 TOP_K = int(os.getenv("TOP_K", "4"))
@@ -36,6 +39,12 @@ def create_rag_chain(vector_store):
 
     llm = get_llm()
 
+    # Fresh cache for this recording
+    semantic_cache = SemanticCache(
+        embedding_model=vector_store.embeddings,
+        similarity_threshold=0.90
+    )
+
     prompt = ChatPromptTemplate.from_messages([
         ("system", """You are an expert video transcript assistant.
 
@@ -61,7 +70,7 @@ Important instructions:
 6. Cite the supporting chunk numbers in your answer,
    for example [Chunk 2].
 
-7. Only cite chunks that actually support your answer.
+7. Only cite chunks that actually support the answer.
 
 Transcript context:
 {context}
@@ -70,7 +79,6 @@ Transcript context:
         ("human", "{question}")
     ])
 
-    # Create the answer-generation chain
     answer_chain = (
         prompt
         | llm
@@ -79,29 +87,42 @@ Transcript context:
 
     def answer_with_sources(question):
 
-        # Retrieve the top K most similar transcript chunks
+        print("\n--- RAG Query ---")
+        print("Question:", question)
+
+        # STEP 1: Check semantic cache
+        cached_result = semantic_cache.get(question)
+
+        if cached_result is not None:
+
+            print("Returning cached result.")
+
+            return cached_result
+
+        # STEP 2: Cache miss -> retrieve relevant chunks
         docs = vector_store.similarity_search(
             question,
             k=TOP_K
         )
 
-        # No documents available
+        # STEP 3: Handle empty retrieval
         if not docs:
+
             return {
                 "answer": FALLBACK_ANSWER,
                 "sources": []
             }
 
-        # Convert retrieved documents into context
+        # STEP 4: Format context
         context = format_docs(docs)
 
-        # Generate a grounded answer
+        # STEP 5: Generate answer
         answer = answer_chain.invoke({
             "context": context,
             "question": question
         })
 
-        # Prepare source information
+        # STEP 6: Prepare sources
         sources = [
             {
                 "chunk_index": doc.metadata.get("chunk_index"),
@@ -111,10 +132,15 @@ Transcript context:
             for doc in docs
         ]
 
-        return {
+        result = {
             "answer": answer,
             "sources": sources
         }
+
+        # STEP 7: Save successful result in cache
+        semantic_cache.add(question, result)
+
+        return result
 
     return RunnableLambda(answer_with_sources)
 
